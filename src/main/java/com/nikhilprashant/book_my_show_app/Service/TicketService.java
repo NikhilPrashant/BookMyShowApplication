@@ -7,11 +7,13 @@ import com.nikhilprashant.book_my_show_app.Entities.TicketEntity;
 import com.nikhilprashant.book_my_show_app.Entities.UserEntity;
 import com.nikhilprashant.book_my_show_app.EntryDTOs.TicketEntryDto;
 import com.nikhilprashant.book_my_show_app.Repository.ShowRepository;
+import com.nikhilprashant.book_my_show_app.Repository.ShowSeatRepository;
 import com.nikhilprashant.book_my_show_app.Repository.TicketRepository;
 import com.nikhilprashant.book_my_show_app.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +28,9 @@ public class TicketService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ShowSeatRepository showSeatRepository;
 
     public String addTicket(TicketEntryDto ticketEntryDto) throws Exception {
         TicketEntity ticketEntity = TicketConverters.convertTicketDtoToEntity(ticketEntryDto);
@@ -84,5 +89,26 @@ public class TicketService {
             if (requestedSeats.contains(seatNo) && showSeatEntity.isBooked()) return false;
         }
         return true;
+    }
+
+    public List<TicketEntity> getTicketBookedBy(Integer userId) {
+        List<TicketEntity> ticketEntityList = ticketRepository.findTicketEntitiesByUserEntityId(userId);
+        return ticketEntityList;
+    }
+
+    public String cancelTicket(Integer ticketId) {
+        TicketEntity ticketEntity = ticketRepository.findById(ticketId).get();
+        int showEntityId = ticketEntity.getShowEntity().getId();
+        String seatsBooked = ticketEntity.getBookedSeats();
+        String seats[] = seatsBooked.split(",\\s*");
+        for (String seat: seats) {
+            int showSeatId = showSeatRepository.findIdBySeatNo(seat, showEntityId);
+            ShowSeatEntity showSeatEntity = showSeatRepository.findById(showSeatId).get();
+            showSeatEntity.setBooked(false);
+            showSeatEntity.setBookedAt(null);
+            showSeatRepository.save(showSeatEntity);
+        }
+        ticketRepository.deleteById(ticketId);
+        return "Ticket deleted successfully";
     }
 }

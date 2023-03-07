@@ -1,5 +1,6 @@
 package com.nikhilprashant.book_my_show_app.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +29,11 @@ public class TicketEntity {
 
     @ManyToOne
     @JoinColumn
+    @JsonIgnore
     UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn
+    @JsonIgnore
     private ShowEntity showEntity;
 }

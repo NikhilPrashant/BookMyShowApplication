@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/movie")
@@ -26,5 +23,17 @@ public class MovieController {
         } catch(Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/getMovieWithMaxShows")
+    public ResponseEntity<String> getMovieWithMaxShows() {
+        String response = movieService.getMovieWithMaxShows();
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/getTotalRevenueByMovie")
+    public ResponseEntity<Integer> getTotalRevenueByMovie(@RequestParam Integer movieId) {
+        Integer response = movieService.getTotalRevenueByMovie(movieId);
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 }

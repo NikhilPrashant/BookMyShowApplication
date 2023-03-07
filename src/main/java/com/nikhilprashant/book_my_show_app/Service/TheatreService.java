@@ -49,4 +49,8 @@ public class TheatreService {
         }
         return theatreSeatEntityList;
     }
+
+    public Integer getCountOfDistinctLocations() {
+        return theatreRepository.countOfUniqueLocations();
+    }
 }
