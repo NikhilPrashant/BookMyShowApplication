@@ -27,9 +27,7 @@ class BookMyShowAppApplicationTests {
 	public void testGetExpectedObject() {
 		Response response = RestAssured.get("localhost:8080/users/add");
 		String expected = "User added successfully";
-		String actual = userController.createUser(new UserEntryDto("test1", 20, "test1@testemail.com", "2134567890", "test1 address")).getBody().toString();
-		assertEquals(expected, actual, "Unexpected status code");
-
+		assertEquals(expected, response.getBody().toString(), "Unexpected status code");
 	}
 
 }
